@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
+import 'dart:async';
 
 // TODO: REMOVE
 import 'dart:math';
@@ -85,6 +86,14 @@ class Tracker {
   int failures;
 
   Tracker(this.name, { this.successes = 0, this.failures = 0 });
+
+  int getSuccessRate() {
+    if (this.failures == 0) {
+      return 0;
+    }
+
+    return ((this.successes / (this.successes + this.failures)) * 100).toInt();
+  }
 }
 
 typedef void TrackerFunction(Tracker tracker);
@@ -142,7 +151,7 @@ class _TrackerWidgetState extends State<TrackerWidget> {
     var success = this._tracker.successes;
     var fail = this._tracker.failures;
 
-    var percentage = ((success / fail) * 100).toInt();
+    var percentage = this._tracker.getSuccessRate();
 
     return new Scaffold(
       appBar: new AppBar(title: new Text('$title')),
@@ -181,12 +190,26 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<Tracker> _trackers = new List<Tracker>();
 
-  void _addTracker() {
-    setState(() {
-      var rng = new Random();
-      var next = rng.nextInt(1000);
+  Future<Null> _addTracker(BuildContext context) async {
+    String nameValue;
+    var name = await showDialog<String>(
+      context: context,
+      child: new SimpleDialog(
+        title: new Text('Create a Tracker'),
+        children: <Widget>[
+          new TextField(
+            onChanged: (String value) { nameValue = value; },
+          ),
+          new SimpleDialogOption(
+            onPressed: () { Navigator.pop(context, nameValue); },
+            child: const Text('Name of the thing'),
+          ),
+        ],
+      )
+    );
 
-      var newTracker = new Tracker('Tracker!! $next', successes: 0, failures: 0);
+    setState(() {
+      var newTracker = new Tracker(name, successes: 0, failures: 0);
 
       this._trackers.add(newTracker);
     });
@@ -228,7 +251,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: new FloatingActionButton(
         child: const Icon(Icons.add),
-        onPressed: this._addTracker,
+        onPressed: () {this._addTracker(context); },
       ),
     );
   }
