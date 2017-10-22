@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+// TODO:Remove
+import 'dart:math';
+
 void main() {
   runApp(new MyApp());
 }
@@ -13,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: new ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: new MyHomePage(title: 'Flutter Demo Home Page'),
+      home: new MyHomePage(title: 'YoshiPls Success Tracker'),
     );
   }
 }
@@ -75,6 +78,27 @@ class CounterCount extends StatelessWidget {
   }
 }
 
+class Tracker {
+  String name;
+  int successes;
+  int failures;
+
+  Tracker(String name, { this.successes = 0, this.failures = 0 });
+}
+
+class TrackerListItem extends StatelessWidget {
+  final Tracker _tracker;
+
+  TrackerListItem(this._tracker);
+
+  @override
+  Widget build(BuildContext context) {
+    return new ListTile(
+      title: new Text(_tracker.name),
+    );
+  }
+}
+
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 
@@ -85,21 +109,36 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  List<Tracker> _trackers = new List<Tracker>();
 
-  void _setCounter(int newCount) {
+  void _addTracker() {
     setState(() {
-      _counter = newCount;
+      var rng = new Random();
+      var next = rng.nextInt(1000);
+
+      this._trackers.add(new Tracker('Tracker!! $next', successes: 0, failures: 0));
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    var items = new List<Widget>();
+    for (var i = 0; i < this._trackers.length; i++) {
+      items.add(new TrackerListItem(_trackers[i]));
+    }
+
     return new Scaffold(
       appBar: new AppBar(
         title: new Text(widget.title),
       ),
-      body: new Counter(counter: this._counter, onClick: this._setCounter),
+      // body: new Counter(counter: this._counter, onClick: this._setCounter),
+      body: new ListView(
+        children: items,
+      ),
+      floatingActionButton: new FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: this._addTracker,
+      ),
     );
   }
 }
