@@ -83,18 +83,21 @@ class Tracker {
   int successes;
   int failures;
 
-  Tracker(String name, { this.successes = 0, this.failures = 0 });
+  Tracker(this.name, { this.successes = 0, this.failures = 0 });
 }
 
 class TrackerListItem extends StatelessWidget {
   final Tracker _tracker;
+  final void _navigate;
 
-  TrackerListItem(this._tracker);
-
+  TrackerListItem(this._tracker, this._navigate);
   @override
   Widget build(BuildContext context) {
-    return new ListTile(
-      title: new Text(_tracker.name),
+    return new MergeSemantics(
+      child: new ListTile(
+        title: new Text(_tracker.name),
+        onTap: () { },
+      )
     );
   }
 }
@@ -116,24 +119,26 @@ class _MyHomePageState extends State<MyHomePage> {
       var rng = new Random();
       var next = rng.nextInt(1000);
 
-      this._trackers.add(new Tracker('Tracker!! $next', successes: 0, failures: 0));
+      var newTracker = new Tracker('Tracker!! $next', successes: 0, failures: 0);
+
+      this._trackers.add(newTracker);
     });
+  }
+
+  Widget _buildListTile(BuildContext context, Tracker tracker) {
+    return new TrackerListItem(tracker);
   }
 
   @override
   Widget build(BuildContext context) {
-    var items = new List<Widget>();
-    for (var i = 0; i < this._trackers.length; i++) {
-      items.add(new TrackerListItem(_trackers[i]));
-    }
+    var items = this._trackers.map((tracker) => this._buildListTile(context, tracker));
 
     return new Scaffold(
       appBar: new AppBar(
         title: new Text(widget.title),
       ),
-      // body: new Counter(counter: this._counter, onClick: this._setCounter),
       body: new ListView(
-        children: items,
+        children: items.toList(),
       ),
       floatingActionButton: new FloatingActionButton(
         child: const Icon(Icons.add),
