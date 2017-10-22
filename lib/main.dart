@@ -196,23 +196,30 @@ class _MyHomePageState extends State<MyHomePage> {
       context: context,
       child: new SimpleDialog(
         title: new Text('Create a Tracker'),
+        contentPadding: new EdgeInsets.all(10.0),
         children: <Widget>[
           new TextField(
+            decoration: new InputDecoration(
+              labelText: 'Create a name for your tracker',
+            ),
             onChanged: (String value) { nameValue = value; },
           ),
-          new SimpleDialogOption(
+          new RaisedButton(
             onPressed: () { Navigator.pop(context, nameValue); },
-            child: const Text('Name of the thing'),
+            child: const Text('Create'),
           ),
         ],
       )
     );
 
-    setState(() {
-      var newTracker = new Tracker(name, successes: 0, failures: 0);
+    // Null indicates the user canceled the dialog.
+    if (name != null) {
+      setState(() {
+        var newTracker = new Tracker(name, successes: 0, failures: 0);
 
-      this._trackers.add(newTracker);
-    });
+        this._trackers.add(newTracker);
+      });
+    }
   }
 
   EditTracker _editTracker(Tracker tracker) {
