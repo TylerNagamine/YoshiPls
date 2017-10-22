@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 
-// TODO:Remove
+// TODO: REMOVE
 import 'dart:math';
 
 void main() {
@@ -86,18 +87,84 @@ class Tracker {
   Tracker(this.name, { this.successes = 0, this.failures = 0 });
 }
 
+typedef void TrackerFunction(Tracker tracker);
 class TrackerListItem extends StatelessWidget {
   final Tracker _tracker;
-  final void _navigate;
+  final TrackerFunction _navigate;
 
   TrackerListItem(this._tracker, this._navigate);
+  
   @override
   Widget build(BuildContext context) {
     return new MergeSemantics(
       child: new ListTile(
         title: new Text(_tracker.name),
-        onTap: () { },
+        onTap: () { this._navigate(this._tracker); },
       )
+    );
+  }
+}
+
+typedef void EditTracker(int success, int failure);
+class TrackerWidget extends StatefulWidget {
+  final Tracker tracker;
+  final EditTracker editTracker;
+
+  TrackerWidget({ Key key, @required this.tracker, @required this.editTracker }) : super(key: key);
+
+  @override
+  _TrackerWidgetState createState() => new _TrackerWidgetState(this.tracker);
+}
+
+class _TrackerWidgetState extends State<TrackerWidget> {
+  Tracker _tracker;
+
+  _TrackerWidgetState(this._tracker);
+
+  void _addSuccess() {
+    this.setState(() {
+      _tracker.successes++;
+      widget.editTracker(_tracker.successes, _tracker.failures);
+    });
+  }
+  
+  void _addFailure() {
+    this.setState(() {
+      _tracker.failures++;
+      widget.editTracker(_tracker.successes, _tracker.failures);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var title = this._tracker.name;
+
+    var success = this._tracker.successes;
+    var fail = this._tracker.failures;
+
+    var percentage = ((success / fail) * 100).toInt();
+
+    return new Scaffold(
+      appBar: new AppBar(title: new Text('$title')),
+      body: new Center(
+        child: new Column(
+          children: <Widget>[
+            new Text('Success rate: $percentage%'),
+
+            new Text('Successes: $success'),
+            new Text('Failures: $fail'),
+
+            new RaisedButton(
+              child: new Text('Success!'),
+              onPressed: this._addSuccess,
+            ),
+            new FlatButton(
+              child: new Text('Failure :('),
+              onPressed: this._addFailure,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -125,8 +192,27 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  EditTracker _editTracker(Tracker tracker) {
+    return (int successes, int failures) {
+      setState(() {
+        tracker.successes = successes;
+        tracker.failures = failures;
+      });
+    };
+  }
+
+  void _onTrackerClick(BuildContext context, Tracker tracker) {
+    var editFunc = _editTracker(tracker);
+
+    Navigator.of(context).push(new MaterialPageRoute(
+      builder: (BuildContext context) {
+        return new TrackerWidget(tracker: tracker, editTracker: editFunc);
+      },
+    ));
+  }
+
   Widget _buildListTile(BuildContext context, Tracker tracker) {
-    return new TrackerListItem(tracker);
+    return new TrackerListItem(tracker, (Tracker t) { this._onTrackerClick(context, t); });
   }
 
   @override
