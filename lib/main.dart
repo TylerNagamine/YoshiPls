@@ -10,7 +10,6 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
@@ -41,13 +40,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   /// Displays a dialog to prompt the user for a tracker name,
   /// then creates a tracker.
-  Future<Null> _addTracker(BuildContext context) async {
+  Future<Null> addTracker(BuildContext context) async {
     String nameValue;
+
     var name = await showDialog<String>(
       context: context,
       child: new SimpleDialog(
-        title: new Text('Create a Tracker'),
-        contentPadding: new EdgeInsets.all(10.0),
+        title: const Text('Create a Tracker'),
+        contentPadding: const EdgeInsets.all(10.0),
         children: <Widget>[
           new TextField(
             decoration: new InputDecoration(
@@ -74,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   /// Function to edit a tracker in state.
-  EditTracker _editTracker(Tracker tracker) {
+  EditTracker editTrackerFactory(Tracker tracker) {
     return (int successes, int failures) {
       setState(() {
         tracker.successes = successes;
@@ -85,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   /// Navigates to a tracker.
   void _onTrackerClick(BuildContext context, Tracker tracker) {
-    var editFunc = _editTracker(tracker);
+    var editFunc = editTrackerFactory(tracker);
 
     Navigator.of(context).push(new MaterialPageRoute(
       builder: (BuildContext context) {
@@ -95,13 +95,13 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   /// Creates a tracker tile to display in the ListView.
-  Widget _buildListTile(BuildContext context, Tracker tracker) {
+  Widget buildListTile(BuildContext context, Tracker tracker) {
     return new TrackerListItem(tracker, (Tracker t) { _onTrackerClick(context, t); });
   }
 
   @override
   Widget build(BuildContext context) {
-    var items = _trackers.map((tracker) => _buildListTile(context, tracker));
+    var items = _trackers.map((tracker) => buildListTile(context, tracker));
 
     return new Scaffold(
       appBar: new AppBar(
@@ -112,7 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: new FloatingActionButton(
         child: const Icon(Icons.add),
-        onPressed: () { _addTracker(context); },
+        onPressed: () { addTracker(context); },
       ),
     );
   }
