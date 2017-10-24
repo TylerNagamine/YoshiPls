@@ -54,11 +54,11 @@ class _TrackerWidgetState extends State<TrackerWidget> {
             new Text('Failures: $fail'),
 
             new RaisedButton(
-              child: new Text('Success!'),
+              child: const Text('Success!'),
               onPressed: this._addSuccess,
             ),
             new FlatButton(
-              child: new Text('Failure :('),
+              child: const Text('Failure :('),
               onPressed: this._addFailure,
             ),
           ],

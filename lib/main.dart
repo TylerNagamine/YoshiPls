@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: 'Flutter Demo',
+      title: 'YoshiPls Success Tracker',
       theme: new ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
 /// Main application widget
 /// Handles all application state
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({ Key key, this.title }) : super(key: key);
 
   final String title;
 
@@ -68,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         var newTracker = new Tracker(name, successes: 0, failures: 0);
 
-        this._trackers.add(newTracker);
+        _trackers.add(newTracker);
       });
     }
   }
@@ -96,12 +96,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   /// Creates a tracker tile to display in the ListView.
   Widget _buildListTile(BuildContext context, Tracker tracker) {
-    return new TrackerListItem(tracker, (Tracker t) { this._onTrackerClick(context, t); });
+    return new TrackerListItem(tracker, (Tracker t) { _onTrackerClick(context, t); });
   }
 
   @override
   Widget build(BuildContext context) {
-    var items = this._trackers.map((tracker) => this._buildListTile(context, tracker));
+    var items = _trackers.map((tracker) => _buildListTile(context, tracker));
 
     return new Scaffold(
       appBar: new AppBar(
@@ -112,7 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: new FloatingActionButton(
         child: const Icon(Icons.add),
-        onPressed: () {this._addTracker(context); },
+        onPressed: () { _addTracker(context); },
       ),
     );
   }
