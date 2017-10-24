@@ -4,17 +4,17 @@ import '../models/Tracker.dart';
 
 /// Tracker list item, displayed in a ListView.
 class TrackerListItem extends StatelessWidget {
-  final Tracker _tracker;
-  final TrackerFunction _navigate;
+  final Tracker tracker;
+  final TrackerFunction navigate;
 
-  TrackerListItem(this._tracker, this._navigate);
+  TrackerListItem(this.tracker, this.navigate);
   
   @override
   Widget build(BuildContext context) {
     return new MergeSemantics(
       child: new ListTile(
-        title: new Text(_tracker.name),
-        onTap: () { this._navigate(this._tracker); },
+        title: new Text(tracker.name),
+        onTap: () { navigate(tracker); },
       )
     );
   }

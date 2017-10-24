@@ -13,10 +13,10 @@ class Tracker {
   Tracker(this.name, { this.successes = 0, this.failures = 0 });
 
   int getSuccessRate() {
-    if (this.failures == 0) {
+    if (failures == 0) {
       return 0;
     }
 
-    return ((this.successes / (this.successes + this.failures)) * 100).toInt();
+    return ((successes / (successes + failures)) * 100).toInt();
   }
 }
