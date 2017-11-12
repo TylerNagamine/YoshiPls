@@ -6,6 +6,7 @@ typedef void TrackerFunction(Tracker tracker);
 
 /// A class which tracks success and failures.
 class Tracker {
+  String id;
   String name;
   int successes;
   int failures;
