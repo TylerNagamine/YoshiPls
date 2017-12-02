@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../models/Tracker.dart';
+import 'package:yoshipls/models/Tracker.dart';
 
 /// Tracker list item, displayed in a ListView.
 class TrackerListItem extends StatelessWidget {

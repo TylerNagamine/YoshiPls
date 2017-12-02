@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 
+import 'package:yoshipls/store/app_state.dart';
+import 'package:yoshipls/store/trackers/actions.dart';
+import 'package:yoshipls/store/trackers/reducers.dart';
+import 'package:yoshipls/store/app_state_reducer.dart';
 import 'tracker/TrackerListItem.dart';
 import 'tracker/TrackerWidget.dart';
-import 'models/Tracker.dart';
+import 'package:yoshipls/models/Tracker.dart';
 
 void main() {
   runApp(new MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  final store = new Store(appReducer, initialState: new AppState(trackers: []));
+
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
@@ -17,30 +25,44 @@ class MyApp extends StatelessWidget {
       theme: new ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: new MyHomePage(title: 'YoshiPls Success Tracker'),
+      home: new StoreProvider(
+        store: store,
+        child: new MyHomePage(title: 'YoshiPls Success Tracker'),
+      )
+      //new MyHomePage(title: 'YoshiPls Success Tracker'),
     );
   }
 }
 
 /// Main application widget
 /// Handles all application state
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends StatelessWidget {
   MyHomePage({ Key key, this.title }) : super(key: key);
 
   final String title;
 
   @override
-  _MyHomePageState createState() => new _MyHomePageState();
-}
-
-/// Main application state
-class _MyHomePageState extends State<MyHomePage> {
-  /// List of trackers currently in memory.
-  List<Tracker> _trackers = new List<Tracker>();
+  Widget build(BuildContext context) {
+    return new StoreConnector<AppState, Store<AppState>>(
+      converter: (store) => store,
+      builder: (context, store) => new Scaffold(
+        appBar: new AppBar(
+          title: new Text(title),
+        ),
+        body: new ListView(
+          children: store.state.trackers.map((tracker) => _buildListTile(context, tracker, store)).toList(),
+        ),
+        floatingActionButton: new FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: () { _addTracker(context, store); },
+        ),
+      ),
+    );
+  }
 
   /// Displays a dialog to prompt the user for a tracker name,
   /// then creates a tracker.
-  Future<Null> addTracker(BuildContext context) async {
+  Future<Null> _addTracker(BuildContext context, Store<AppState> store) async {
     String nameValue;
 
     var name = await showDialog<String>(
@@ -65,55 +87,29 @@ class _MyHomePageState extends State<MyHomePage> {
 
     // Null indicates the user canceled the dialog.
     if (name != null) {
-      setState(() {
         var newTracker = new Tracker(name, successes: 0, failures: 0);
 
-        _trackers.add(newTracker);
-      });
+        store.dispatch(new AddTrackerAction(newTracker));
     }
   }
 
-  /// Function to edit a tracker in state.
-  EditTracker editTrackerFactory(Tracker tracker) {
-    return (int successes, int failures) {
-      setState(() {
-        tracker.successes = successes;
-        tracker.failures = failures;
-      });
-    };
+  /// Creates a tracker tile to display in the ListView.
+  Widget _buildListTile(BuildContext context, Tracker tracker, Store<AppState> store) {
+    return new TrackerListItem(tracker, (Tracker t) { _onTrackerClick(context, t, store); });
   }
 
-  /// Navigates to a tracker.
-  void _onTrackerClick(BuildContext context, Tracker tracker) {
-    var editFunc = editTrackerFactory(tracker);
-
+  // Navigates to a tracker.
+  void _onTrackerClick(BuildContext context, Tracker tracker, Store<AppState> store) {
     Navigator.of(context).push(new MaterialPageRoute(
       builder: (BuildContext context) {
-        return new TrackerWidget(tracker: tracker, editTracker: editFunc);
-      },
-    ));
-  }
+        var thisTracker = store.state.trackers.firstWhere((value) => value.id == tracker.id);
 
-  /// Creates a tracker tile to display in the ListView.
-  Widget buildListTile(BuildContext context, Tracker tracker) {
-    return new TrackerListItem(tracker, (Tracker t) { _onTrackerClick(context, t); });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var items = _trackers.map((tracker) => buildListTile(context, tracker));
-
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text(widget.title),
-      ),
-      body: new ListView(
-        children: items.toList(),
-      ),
-      floatingActionButton: new FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () { addTracker(context); },
-      ),
+        return new TrackerWidget(
+          tracker: tracker,
+          editTracker: (int success, int failure) {
+            store.dispatch(new UpdateTrackerAction(thisTracker.id, success, failure));
+          });
+      })
     );
   }
 }

@@ -18,5 +18,17 @@ List<Tracker> _deleteTracker(List<Tracker> trackers, DeleteTrackerAction action)
 }
 
 List<Tracker> _updateTracker(List<Tracker> trackers, UpdateTrackerAction action) {
-  return trackers.map((tracker) => tracker.id == action.id ? action.tracker : tracker);
+  var stateCopy = new List.from(trackers);
+
+  for (var i = 0; i < stateCopy.length; i++) {
+    var tracker = stateCopy[i];
+
+    if (tracker.id == action.id) {
+      var newTracker = new Tracker(tracker.name, successes: action.success, failures: action.failure);
+      stateCopy[i] = newTracker;
+      break;
+    }
+  }
+
+  return stateCopy;
 }

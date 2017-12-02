@@ -14,7 +14,8 @@ class DeleteTrackerAction {
 
 class UpdateTrackerAction {
   final String id;
-  final Tracker tracker;
+  final int success;
+  final int failure;
 
-  UpdateTrackerAction(this.id, this.tracker);
+  UpdateTrackerAction(this.id, this.success, this.failure);
 }

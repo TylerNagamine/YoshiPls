@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import '../models/Tracker.dart';
+import 'package:yoshipls/models/Tracker.dart';
 
 /// The main tracker widget.  Displays options for manipulating a tracker
 /// (IE increment failures and successes), and shows state.
