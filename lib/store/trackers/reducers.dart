@@ -14,7 +14,7 @@ List<Tracker> _addTracker(List<Tracker> trackers, AddTrackerAction action) {
 }
 
 List<Tracker> _deleteTracker(List<Tracker> trackers, DeleteTrackerAction action) {
-  return trackers.where((tracker) => tracker.id != action.id);
+  return trackers.where((tracker) => tracker.id != action.id).toList();
 }
 
 List<Tracker> _updateTracker(List<Tracker> trackers, UpdateTrackerAction action) {

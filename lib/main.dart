@@ -107,7 +107,7 @@ class MyHomePage extends StatelessWidget {
             var thisTracker = store.state.trackers.firstWhere((value) => value.id == tracker.id);
 
             return new TrackerWidget( 
-              tracker: tracker,
+              tracker: thisTracker,
               editTracker: (int success, int failure) {
                 store.dispatch(new UpdateTrackerAction(thisTracker.id, success, failure));
               }
