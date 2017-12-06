@@ -4,6 +4,8 @@ import 'package:redux/redux.dart';
 
 import 'package:yoshipls/store/app_state.dart';
 import 'package:yoshipls/store/app_state_reducer.dart';
+import 'package:yoshipls/store/trackers/actions.dart';
+import 'package:yoshipls/store/middleware/repository_middleware.dart';
 import 'package:yoshipls/tracker/tracker_list/tracker_list.container.dart';
 import 'package:yoshipls/tracker/add_tracker_button/add_tracker_button.container.dart';
 
@@ -12,7 +14,10 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  final store = new Store(appReducer, initialState: new AppState(trackers: [], isLoading: false));
+  final store = new Store(
+    appReducer,
+    initialState: new AppState.loading(),
+    middleware: createRepositoryMiddleware());
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +28,10 @@ class MyApp extends StatelessWidget {
         theme: new ThemeData(
           primarySwatch: Colors.amber,
         ),
-        home: new MyHomePage(title: 'YoshiPls Success Tracker')
+        home: new StoreBuilder<AppState>(
+          onInit: (store) => store.dispatch(new LoadTrackersAction()),
+          builder: (context, store) => new MyHomePage(title: 'YoshiPls Success Tracker'),
+        ),
       ),
     );
   }

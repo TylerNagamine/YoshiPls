@@ -40,4 +40,24 @@ class Tracker {
 
     return ((successes / (successes + failures)) * 100).toInt();
   }
+
+  static Tracker fromJson(Map<String, Object> json) {
+    final tracker = new Tracker(
+      json["name"] as String,
+      successes: json["successes"] as int,
+      failures: json["failures"] as int,
+    );
+    tracker.id = json["id"] as String;
+
+    return tracker;
+  }
+
+  Map<String, Object> toJson() {
+    return {
+      "id": id,
+      "name": name,
+      "successes": successes,
+      "failures": failures,
+    };
+  }
 }

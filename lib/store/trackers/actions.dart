@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import 'package:yoshipls/models/tracker.dart';
 
 class AddTrackerAction {
@@ -10,6 +12,14 @@ class DeleteTrackerAction {
   final String id;
 
   DeleteTrackerAction(this.id);
+}
+
+class LoadTrackersAction {}
+
+class TrackersLoadedAction {
+  final List<Tracker> trackers;
+
+  TrackersLoadedAction({ @required this.trackers });
 }
 
 class UpdateTrackerAction {

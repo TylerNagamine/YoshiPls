@@ -6,6 +6,7 @@ import 'package:yoshipls/store/trackers/actions.dart';
 final trackersReducer = combineTypedReducers<List<Tracker>>([
   new ReducerBinding<List<Tracker>, AddTrackerAction>(_addTracker),
   new ReducerBinding<List<Tracker>, DeleteTrackerAction>(_deleteTracker),
+  new ReducerBinding<List<Tracker>, TrackersLoadedAction>(_trackersLoaded),
   new ReducerBinding<List<Tracker>, UpdateTrackerAction>(_updateTracker),
 ]);
 
@@ -15,6 +16,10 @@ List<Tracker> _addTracker(List<Tracker> trackers, AddTrackerAction action) {
 
 List<Tracker> _deleteTracker(List<Tracker> trackers, DeleteTrackerAction action) {
   return trackers.where((tracker) => tracker.id != action.id).toList();
+}
+
+List<Tracker> _trackersLoaded(List<Tracker> trackers, TrackersLoadedAction action) {
+  return new List.from(action.trackers);
 }
 
 List<Tracker> _updateTracker(List<Tracker> trackers, UpdateTrackerAction action) {

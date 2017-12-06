@@ -9,6 +9,8 @@ class AppState {
 
   AppState({ this.trackers = const [], this.isLoading = false });
 
+  factory AppState.loading() => new AppState(isLoading: true);
+
   AppState copyWith({ List<Tracker> trackers, bool isLoading }) {
     return new AppState(trackers: trackers ?? this.trackers, isLoading: isLoading ?? false);
   }
