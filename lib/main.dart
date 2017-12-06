@@ -7,8 +7,8 @@ import 'package:yoshipls/store/app_state.dart';
 import 'package:yoshipls/store/trackers/actions.dart';
 import 'package:yoshipls/store/trackers/reducers.dart';
 import 'package:yoshipls/store/app_state_reducer.dart';
-import 'tracker/TrackerListItem.dart';
-import 'tracker/TrackerWidget.dart';
+import 'package:yoshipls/tracker/TrackerListItem.dart';
+import 'package:yoshipls/tracker/TrackerWidget.dart';
 import 'package:yoshipls/models/Tracker.dart';
 
 void main() {
@@ -20,16 +20,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      title: 'YoshiPls Success Tracker',
-      theme: new ThemeData(
-        primarySwatch: Colors.blue,
+    return new StoreProvider(
+      store: store,
+      child: new MaterialApp(
+        title: 'YoshiPls Success Tracker',
+        theme: new ThemeData(
+          primarySwatch: Colors.amber,
+        ),
+        home: new MyHomePage(title: 'YoshiPls Success Tracker')
       ),
-      home: new StoreProvider(
-        store: store,
-        child: new MyHomePage(title: 'YoshiPls Success Tracker'),
-      )
-      //new MyHomePage(title: 'YoshiPls Success Tracker'),
     );
   }
 }
@@ -50,7 +49,7 @@ class MyHomePage extends StatelessWidget {
           title: new Text(title),
         ),
         body: new ListView(
-          children: store.state.trackers.map((tracker) => _buildListTile(context, tracker, store)).toList(),
+          children: store.state.trackers.map((tracker) => _buildListTile(context, tracker)).toList(),
         ),
         floatingActionButton: new FloatingActionButton(
           child: const Icon(Icons.add),
@@ -88,28 +87,33 @@ class MyHomePage extends StatelessWidget {
     // Null indicates the user canceled the dialog.
     if (name != null) {
         var newTracker = new Tracker(name, successes: 0, failures: 0);
+        newTracker.id = new DateTime.now().millisecondsSinceEpoch.toString();
 
         store.dispatch(new AddTrackerAction(newTracker));
     }
   }
 
   /// Creates a tracker tile to display in the ListView.
-  Widget _buildListTile(BuildContext context, Tracker tracker, Store<AppState> store) {
-    return new TrackerListItem(tracker, (Tracker t) { _onTrackerClick(context, t, store); });
+  Widget _buildListTile(BuildContext context, Tracker tracker) {
+    return new TrackerListItem(tracker, (Tracker t) { _onTrackerClick(context, t); });
   }
 
   // Navigates to a tracker.
-  void _onTrackerClick(BuildContext context, Tracker tracker, Store<AppState> store) {
+  void _onTrackerClick(BuildContext context, Tracker tracker) {
     Navigator.of(context).push(new MaterialPageRoute(
-      builder: (BuildContext context) {
-        var thisTracker = store.state.trackers.firstWhere((value) => value.id == tracker.id);
+      builder: (BuildContext c) => new StoreConnector<AppState, Store<AppState>>(
+          converter: (store) => store,
+          builder: (context, store) {
+            var thisTracker = store.state.trackers.firstWhere((value) => value.id == tracker.id);
 
-        return new TrackerWidget(
-          tracker: tracker,
-          editTracker: (int success, int failure) {
-            store.dispatch(new UpdateTrackerAction(thisTracker.id, success, failure));
-          });
-      })
-    );
+            return new TrackerWidget( 
+              tracker: tracker,
+              editTracker: (int success, int failure) {
+                store.dispatch(new UpdateTrackerAction(thisTracker.id, success, failure));
+              }
+            );
+          }
+        ),
+    ));
   }
 }

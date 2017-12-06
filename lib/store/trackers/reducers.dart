@@ -24,7 +24,9 @@ List<Tracker> _updateTracker(List<Tracker> trackers, UpdateTrackerAction action)
     var tracker = stateCopy[i];
 
     if (tracker.id == action.id) {
-      var newTracker = new Tracker(tracker.name, successes: action.success, failures: action.failure);
+      var newTracker = new Tracker.from(tracker);
+      newTracker.successes = action.success;
+      newTracker.failures = action.failure;
       stateCopy[i] = newTracker;
       break;
     }

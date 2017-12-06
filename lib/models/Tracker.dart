@@ -13,6 +13,13 @@ class Tracker {
 
   Tracker(this.name, { this.successes = 0, this.failures = 0 });
 
+  Tracker.from(Tracker other) {
+    id = other.id;
+    name = other.name;
+    successes = other.successes;
+    failures = other.failures;
+  }
+
   int getSuccessRate() {
     if (failures == 0) {
       return 0;
