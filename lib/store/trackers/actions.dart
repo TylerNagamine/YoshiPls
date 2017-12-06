@@ -1,4 +1,4 @@
-import 'package:yoshipls/models/Tracker.dart';
+import 'package:yoshipls/models/tracker.dart';
 
 class AddTrackerAction {
   final Tracker tracker;

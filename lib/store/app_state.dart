@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import 'package:yoshipls/models/Tracker.dart';
+import 'package:yoshipls/models/tracker.dart';
 
 @immutable
 class AppState {

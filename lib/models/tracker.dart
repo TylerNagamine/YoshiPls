@@ -20,6 +20,19 @@ class Tracker {
     failures = other.failures;
   }
 
+  Tracker copyWith({ int successes = -1, int failures = -1 }) {
+    var tracker = new Tracker.from(this);
+    
+    if (successes != -1) {
+      tracker.successes = successes;
+    }
+    if (failures != -1) {
+      tracker.failures = failures;
+    }
+
+    return tracker;
+  }
+
   int getSuccessRate() {
     if (failures == 0) {
       return 0;

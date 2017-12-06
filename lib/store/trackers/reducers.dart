@@ -1,6 +1,6 @@
 import 'package:redux/redux.dart';
 
-import 'package:yoshipls/models/Tracker.dart';
+import 'package:yoshipls/models/tracker.dart';
 import 'package:yoshipls/store/trackers/actions.dart';
 
 final trackersReducer = combineTypedReducers<List<Tracker>>([

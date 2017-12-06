@@ -5,11 +5,10 @@ import 'package:redux/redux.dart';
 
 import 'package:yoshipls/store/app_state.dart';
 import 'package:yoshipls/store/trackers/actions.dart';
-import 'package:yoshipls/store/trackers/reducers.dart';
 import 'package:yoshipls/store/app_state_reducer.dart';
-import 'package:yoshipls/tracker/TrackerListItem.dart';
-import 'package:yoshipls/tracker/TrackerWidget.dart';
-import 'package:yoshipls/models/Tracker.dart';
+import 'package:yoshipls/tracker/tracker_list_item.dart';
+import 'package:yoshipls/tracker/tracker_widget.container.dart';
+import 'package:yoshipls/models/tracker.dart';
 
 void main() {
   runApp(new MyApp());
@@ -106,12 +105,7 @@ class MyHomePage extends StatelessWidget {
           builder: (context, store) {
             var thisTracker = store.state.trackers.firstWhere((value) => value.id == tracker.id);
 
-            return new TrackerWidget( 
-              tracker: thisTracker,
-              editTracker: (int success, int failure) {
-                store.dispatch(new UpdateTrackerAction(thisTracker.id, success, failure));
-              }
-            );
+            return new TrackerWidgetContainer(tracker: thisTracker);
           }
         ),
     ));
