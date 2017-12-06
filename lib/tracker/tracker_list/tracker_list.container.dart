@@ -26,8 +26,8 @@ class _ViewModel {
   final bool isLoading;
 
   _ViewModel({
-    @required List<Tracker> trackers,
-    @required bool isLoading,
+    @required this.trackers,
+    @required this.isLoading,
   });
 
   static _ViewModel fromStore(Store<AppState> store) {

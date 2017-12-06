@@ -12,7 +12,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  final store = new Store(appReducer, initialState: new AppState(trackers: []));
+  final store = new Store(appReducer, initialState: new AppState(trackers: [], isLoading: false));
 
   @override
   Widget build(BuildContext context) {

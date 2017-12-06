@@ -33,7 +33,7 @@ class TrackerList extends StatelessWidget {
 
   void _navigate(BuildContext context, Tracker tracker) {
     Navigator.of(context).push(new MaterialPageRoute(
-      builder: (_) => new TrackerWidgetContainer(tracker: tracker),
+      builder: (_) => new TrackerWidgetContainer(trackerId: tracker.id),
     ));
   }
 }
